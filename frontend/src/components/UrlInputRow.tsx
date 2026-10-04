@@ -32,7 +32,7 @@ export default function UrlInputRow({
         onPaste={(event) => onPaste(index, event)}
         placeholder="https://example.com"
         aria-label={`Website URL ${index + 1}`}
-        className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-ink placeholder:text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        className="w-full rounded-xl border border-border bg-background/60 px-4 py-3 font-medium text-ink placeholder:text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
       />
       {canRemove && (
         <button

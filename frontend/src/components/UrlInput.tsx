@@ -107,7 +107,7 @@ export default function UrlInput({ onSubmit, isSubmitting }: UrlInputProps) {
         <button
           type="submit"
           disabled={!hasAnyValue || isSubmitting}
-          className="w-full rounded-lg bg-primary px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-xl bg-primary px-7 py-3 text-base font-bold text-white shadow-md shadow-primary/25 transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {isSubmitting ? "Starting capture..." : "Capture Websites"}
         </button>

@@ -1,8 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import ErrorState from "../components/ErrorState";
-import ProcessingView from "../components/ProcessingView";
-import ResultsGrid from "../components/ResultsGrid";
+import JobView from "../components/JobView";
 import { useJobStatus } from "../hooks/useJobStatus";
 
 export default function Job() {
@@ -22,16 +21,13 @@ export default function Job() {
     return (
       <div className="flex flex-col items-center justify-center px-4 py-24 text-center">
         <Loader2 size={28} className="animate-spin text-primary" aria-hidden="true" />
-        <p className="mt-4 text-muted">Loading job status...</p>
+        <p className="mt-4 font-medium text-muted">Loading job status...</p>
       </div>
     );
   }
 
-  if (job.status === "pending" || job.status === "processing") {
-    return <ProcessingView job={job} />;
-  }
-
-  if (job.completed === 0 && job.failed > 0) {
+  const finished = job.status === "completed" || job.status === "failed";
+  if (finished && job.completed === 0 && job.failed > 0) {
     return (
       <ErrorState
         title="We couldn't capture these websites."
@@ -40,5 +36,5 @@ export default function Job() {
     );
   }
 
-  return <ResultsGrid job={job} />;
+  return <JobView job={job} />;
 }
