@@ -38,6 +38,23 @@ function dismissOverlaysInPage() {
     if ((position === 'fixed' || position === 'sticky') && zIndex >= 999 && coversViewport) {
       el.remove();
       removed += 1;
+      continue;
+    }
+
+    // Small floating promo/chat widgets (e.g. "Get Free Consultancy" cards): fixed,
+    // card-sized, and either carrying a close button or CTA-style text.
+    if (position === 'fixed' && rect.width > 0 && rect.width <= 480 && rect.height <= 220) {
+      const text = (el.innerText || '').trim().toLowerCase();
+      const hasClose = !!el.querySelector(
+        '[aria-label*="close" i], [class*="close" i], button[title*="close" i]'
+      );
+      const looksLikeCta =
+        /free (consult|quote|trial|demo|audit)|book (a )?(call|demo)|chat with|talk to|get started|subscribe|we.re hiring/.test(text);
+      const isNav = !!el.closest('header, nav') || el.matches('header, nav');
+      if (!isNav && text.length < 120 && (looksLikeCta || (hasClose && text.length > 0))) {
+        el.remove();
+        removed += 1;
+      }
     }
   }
 

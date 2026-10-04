@@ -28,6 +28,9 @@ export const settings = {
 
   browserTimeoutMs: envInt("BROWSER_TIMEOUT_MS", 30000),
 
+  // Total time budget for scrolling/animation settling before each capture.
+  pageSettleMaxMs: envInt("PAGE_SETTLE_MAX_MS", 15000),
+
   tempFileRetentionMinutes: envInt("TEMP_FILE_RETENTION_MINUTES", 30),
 
   corsOrigins: envStr("CORS_ORIGINS", "http://localhost:5173"),

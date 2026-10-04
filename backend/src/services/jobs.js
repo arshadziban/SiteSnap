@@ -4,6 +4,7 @@ import path from "node:path";
 import { settings } from "../config.js";
 import { browserManager } from "./browser.js";
 import { dismissOverlays } from "./overlays.js";
+import { waitForPageToSettle } from "./pageReady.js";
 import { generatePdf, pdfFromImage } from "./pdf.js";
 import { captureFullPageScreenshot, captureScreenshotParts } from "./screenshot.js";
 import { domainFromUrl, sanitizeFilenameComponent } from "../utils/files.js";
@@ -165,6 +166,7 @@ class JobManager {
           throw exc;
         }
 
+        await waitForPageToSettle(page);
         await dismissOverlays(page);
         await captureFullPageScreenshot(page, pngPath, job.maxHeightPx);
         await generatePdf(page, pdfPath);

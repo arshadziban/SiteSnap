@@ -25,12 +25,20 @@ class BrowserManager {
     console.log("Chromium browser stopped.");
   }
 
-  /** Runs `fn(page)` inside a fresh, isolated browser context+page, cleaning up after. */
-  async withPage(fn) {
+  /** Relaunches Chromium if the shared instance died or disconnected. */
+  async _ensureBrowser(forceRestart = false) {
     if (!this._browser) {
       throw new Error("Browser has not been started.");
     }
+    if (forceRestart || !this._browser.isConnected()) {
+      console.warn("Chromium is unhealthy; relaunching.");
+      await this._browser.close().catch(() => {});
+      await this.start();
+    }
+  }
 
+  async _openPage(forceRestart) {
+    await this._ensureBrowser(forceRestart);
     const context = await this._browser.newContext({
       viewport: VIEWPORT,
       userAgent:
@@ -39,16 +47,34 @@ class BrowserManager {
       ignoreHTTPSErrors: false,
     });
     context.setDefaultTimeout(settings.browserTimeoutMs);
-
     try {
       const page = await context.newPage();
+      return { context, page };
+    } catch (exc) {
+      await context.close().catch(() => {});
+      throw exc;
+    }
+  }
+
+  /** Runs `fn(page)` inside a fresh, isolated browser context+page, cleaning up after. */
+  async withPage(fn) {
+    let opened;
+    try {
+      opened = await this._openPage(false);
+    } catch {
+      // A crashed shared browser fails newPage; relaunch once and retry.
+      opened = await this._openPage(true);
+    }
+    const { context, page } = opened;
+
+    try {
       try {
         return await fn(page);
       } finally {
-        await page.close();
+        await page.close().catch(() => {});
       }
     } finally {
-      await context.close();
+      await context.close().catch(() => {});
     }
   }
 }
