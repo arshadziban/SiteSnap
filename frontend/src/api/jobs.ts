@@ -38,3 +38,7 @@ export async function getJob(jobId: string): Promise<Job> {
 export function zipDownloadUrl(jobId: string): string {
   return `${API_BASE_URL}/api/jobs/${jobId}/download`;
 }
+
+export function firstPartsZipDownloadUrl(jobId: string): string {
+  return `${API_BASE_URL}/api/jobs/${jobId}/download-first-parts`;
+}

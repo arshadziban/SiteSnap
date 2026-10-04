@@ -4,7 +4,7 @@ import path from "node:path";
 import { Router } from "express";
 import { settings } from "../config.js";
 import { jobManager } from "../services/jobs.js";
-import { createExportZipWithParts } from "../services/zip.js";
+import { createExportZipWithParts, createFirstPartsZip } from "../services/zip.js";
 import { isValidUuid } from "../utils/security.js";
 import { UrlValidationError, validateAndNormalize } from "../utils/urls.js";
 
@@ -207,6 +207,31 @@ jobsRouter.get("/api/jobs/:jobId/download", async (req, res, next) => {
     job.zipPath = zipPath;
 
     res.download(zipPath, "sitesnap-export.zip");
+  } catch (exc) {
+    next(exc);
+  }
+});
+
+jobsRouter.get("/api/jobs/:jobId/download-first-parts", async (req, res, next) => {
+  try {
+    const { jobId } = req.params;
+    if (!isValidUuid(jobId)) {
+      return res.status(404).json({ detail: "Job not found. It may have expired." });
+    }
+    const job = await jobManager.getJob(jobId);
+    if (!job) return res.status(404).json({ detail: "Job not found. It may have expired." });
+
+    const entries = job.items
+      .filter((i) => i.status === "completed")
+      .map((i) => ({ folderName: i.folderName, pngPath: i.parts.find((p) => p.index === 1)?.pngPath }))
+      .filter((e) => e.pngPath && fs.existsSync(e.pngPath));
+    if (entries.length === 0) {
+      return res.status(404).json({ detail: "No first-part screenshots available for this job." });
+    }
+
+    const zipPath = path.join(job.dir, "sitesnap-first-parts.zip");
+    await createFirstPartsZip(zipPath, entries);
+    res.download(zipPath, "sitesnap-first-parts.zip");
   } catch (exc) {
     next(exc);
   }

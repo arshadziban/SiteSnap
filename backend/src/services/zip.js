@@ -40,3 +40,27 @@ export async function createExportZipWithParts(zipPath, folderFiles, folderParts
     archive.finalize();
   });
 }
+
+/**
+ * Create a flat ZIP containing only the first part (part-1.png) of each site.
+ *
+ * entries: [{folderName, pngPath}]; each is stored as `<folderName>-part-1.png`.
+ */
+export async function createFirstPartsZip(zipPath, entries) {
+  await new Promise((resolve, reject) => {
+    const output = fs.createWriteStream(zipPath);
+    const archive = archiver("zip", { zlib: { level: 9 } });
+
+    output.on("close", resolve);
+    archive.on("error", reject);
+    archive.pipe(output);
+
+    for (const { folderName, pngPath } of entries) {
+      if (pngPath && fs.existsSync(pngPath)) {
+        archive.file(pngPath, { name: `sitesnap-first-parts/${folderName}-part-1.png` });
+      }
+    }
+
+    archive.finalize();
+  });
+}
