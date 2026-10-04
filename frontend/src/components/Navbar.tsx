@@ -1,14 +1,12 @@
-import { Camera } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.svg";
 
 export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-card/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
         <Link to="/" className="flex items-center gap-2.5 font-bold text-ink">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white shadow-sm">
-            <Camera size={18} aria-hidden="true" />
-          </span>
+          <img src={logo} alt="" className="h-9 w-auto" />
           <span className="text-2xl tracking-tight">SiteSnap</span>
         </Link>
         <nav className="flex items-center gap-4">

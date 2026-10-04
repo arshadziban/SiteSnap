@@ -96,18 +96,6 @@ The app runs at `http://localhost:5173`.
 
 Full request/response schemas are available at `/docs`.
 
-## Testing
-
-```bash
-cd backend
-npm test
-```
-
-Covers URL validation and normalization, SSRF/private-IP rejection,
-deduplication, filename sanitization and path-traversal protection, ZIP
-structure, job creation/polling via the Express app, and one real
-end-to-end Playwright capture against a live website.
-
 ## Privacy
 
 SiteSnap does not permanently store your URLs or generated files. Each
