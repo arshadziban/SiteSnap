@@ -20,7 +20,6 @@ Enter one or more URLs, and SiteSnap captures each with headless Chromium (Playw
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS
 - **Backend:** Node.js 18+, Express, Playwright, pdf-lib, sharp, archiver
 
-
 ## Limitations
 
 - Job state is in memory; restarting the backend clears active jobs.
