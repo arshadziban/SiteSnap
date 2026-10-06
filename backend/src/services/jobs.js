@@ -7,6 +7,7 @@ import { dismissOverlays } from "./overlays.js";
 import { waitForPageToSettle } from "./pageReady.js";
 import { generatePdf, pdfFromImage } from "./pdf.js";
 import { captureFullPageScreenshot, captureScreenshotParts } from "./screenshot.js";
+import { freezeBackgroundVideos } from "./videos.js";
 import { domainFromUrl, sanitizeFilenameComponent } from "../utils/files.js";
 import { newId } from "../utils/security.js";
 
@@ -168,6 +169,7 @@ class JobManager {
 
         await waitForPageToSettle(page);
         await dismissOverlays(page);
+        await freezeBackgroundVideos(page);
         await captureFullPageScreenshot(page, pngPath, job.maxHeightPx);
         await generatePdf(page, pdfPath);
 
