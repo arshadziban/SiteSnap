@@ -20,7 +20,7 @@ const tempDir = envStr("TEMP_DIR", "");
 export const settings = {
   appEnv: envStr("APP_ENV", "development"),
 
-  host: envStr("HOST", "0.0.0.0"),
+  host: envStr("HOST", "::"),
   port: envInt("PORT", 8000),
 
   maxUrlsPerJob: envInt("MAX_URLS_PER_JOB", 20),
@@ -33,7 +33,7 @@ export const settings = {
 
   tempFileRetentionMinutes: envInt("TEMP_FILE_RETENTION_MINUTES", 30),
 
-  corsOrigins: envStr("CORS_ORIGINS", "http://localhost:5173"),
+  corsOrigins: envStr("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"),
 
   maxScreenshotHeightPx: envInt("MAX_SCREENSHOT_HEIGHT_PX", 20000),
 

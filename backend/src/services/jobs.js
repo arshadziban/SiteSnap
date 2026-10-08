@@ -167,7 +167,22 @@ class JobManager {
           throw exc;
         }
 
-        await waitForPageToSettle(page);
+        // Some sites reload themselves shortly after scrolling; that discards any DOM
+        // cleanup, so track navigations and redo the settle pass on the fresh document.
+        let navigations = 0;
+        const onNavigated = (frame) => {
+          if (frame === page.mainFrame()) navigations += 1;
+        };
+        page.on("framenavigated", onNavigated);
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const before = navigations;
+          await waitForPageToSettle(page);
+          await page.waitForTimeout(1200);
+          if (navigations === before) break;
+          await page.waitForLoadState("load").catch(() => {});
+          await page.waitForLoadState("networkidle", { timeout: 4000 }).catch(() => {});
+        }
+        page.off("framenavigated", onNavigated);
         await dismissOverlays(page);
         await freezeBackgroundVideos(page);
         await captureFullPageScreenshot(page, pngPath, job.maxHeightPx);
